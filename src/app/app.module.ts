@@ -34,7 +34,7 @@ import { AuthComponent } from './auth/auth.component';
 
 import { ToastrModule } from 'ngx-toastr';
 import { CookieService } from 'ngx-cookie-service';
-
+// token git hub ::   a28b8a4ac3349bb996dd80042c18e29d82cffd5c
 const appRoutes: Routes = [
   { path: 'auth', component: AuthComponent },
   { path: 'isolement', canActivate: [AuthGuard], component: IsolementComponent },
