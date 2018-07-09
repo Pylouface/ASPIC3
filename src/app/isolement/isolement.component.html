@@ -1,0 +1,163 @@
+<!--  Vue Validation de document -->
+    <div class="container-fluid">
+        <div class="row tb_bandeau">
+            <div class="col col-3 td_bandeau">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Rechercher</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" [(ngModel)]="searchString">
+                </div>
+            </div>
+            <form (ngSubmit)="onSubmit(f)" #f="ngForm">
+                <div class="col col-3 td_bandeau">
+                    <mat-form-field>
+                        <input matInput [matDatepicker]="picker" placeholder="Entre le" [(ngModel)]="date_deb" name="date_deb">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                </div>
+                <div class="col col-3 td_bandeau">
+                    <mat-form-field>
+                        <input matInput [matDatepicker]="picker2" placeholder="Et le" [(ngModel)]="date_fin" name="date_fin">
+                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                        <mat-datepicker #picker2></mat-datepicker>
+                    </mat-form-field>
+                </div>
+                <div class="col col-2 td_bandeau">
+                    <div class="input-group">
+                        <!--<button class="btn btn-dark btn-sm" (click)="chargeIsolement()">Rechercher</button>-->
+                        <button class="btn btn-primary" type="submit" [disabled]="f.invalid">Rechercher</button>
+                    </div>
+                </div>
+            </form>
+            <div class="col col-1 td_bandeau">
+                <label>Patient test :
+            <input type="checkbox" [(ngModel)]="patientTest">
+       </label>
+            </div>
+        </div>
+        <!-- Admin uniquement, permet d'ajouter des utilisateurs -->
+        <div class="row tb_bandeau">
+            <div class="col col-4 td_bandeau">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Ajouter un utilisateur</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+                    <button class="btn btn-dark btn-sm">Ajouter</button>
+                </div>
+            </div>
+            <div class="col col-4 td_bandeau">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Supprimer un utilisateur</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+                    <button class="btn btn-dark btn-sm">Supprimer</button>
+                </div>
+            </div>
+            <div class="col col-4 td_bandeau">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Ajouter un super utilisateur</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+                    <button class="btn btn-danger btn-sm">Ajouter</button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="of_scrollbar backgroundRowStriped">
+                    <img src="assets/images/excel-icon.png" alt="Exporter en csv" height="26px" width="26px" (click)="toCSV()">
+                    <table class="table table-sm table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="cursorPointer"><a>NOM</a></th>
+                                <th class="cursorPointer"><a>PRENOM</a></th>
+                                <th class="cursorPointer"><a>IPP</a></th>
+                                <th class="cursorPointer"><a>IEP</a></th>
+                                <th class="cursorPointer"><a>DATE_NAISSANCE</a></th>
+                                <th class="cursorPointer"><a>SEXE</a></th>
+                                <th class="cursorPointer"><a>DEBUT SEJOUR</a></th>
+                                <th class="cursorPointer"><a>FIN DE SEJOUR</a></th>
+                                <th class="cursorPointer"><a>DEBUT ISOLEMENT</a></th>
+                                <th class="cursorPointer"><a>FIN ISOLEMENT</a></th>
+                                <th class="couleurEntenteTableau"><a>DUREE</a></th>
+                                <th class="cursorPointer"><a>PRECRIPTEUR</a></th>
+                                <th class="cursorPointer"><a>UF</a></th>
+                                <th class="couleurEntenteTableau"><a>Renouvellement</a></th>
+                                <th class="cursorPointer"><a>CHAMBRE STANDARD</a></th>
+                                <th class="cursorPointer"><a>RASION CHAMBRE STANDARD</a></th>
+                                <th class="cursorPointer"><a>PATIENT INFORME</a></th>
+                                <th class="cursorPointer"><a>FAMILLE PREVENU</a></th>
+                                <th class="cursorPointer"><a>MODE HOSPI</a></th>
+                                <th class="cursorPointer"><a>INDICATIONS</a></th>
+                                <th class="cursorPointer"><a>MESURES PREVENTIVES</a></th>
+                                <th class="cursorPointer"><a>CIRCONSTANCES</a></th>
+                                <th class="cursorPointer"><a>MEDECIN PRESCRIPTEUR SORTIE</a></th>
+                                <th class="cursorPointer"><a>OBSERVATION DE SORTIE</a></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let iso of IsolementService.listeIsolements | noTestPatient : patientTest | inSearch : searchString; let i = index">
+                                <!-- ne marche pas car l'élément app-isolement englobe l'ensemble des td avant de l'insérer dans le tr -->
+                                <!--<app-isolement  
+                              [_ACTIVITY_ID]="iso._ACTIVITY_ID"
+                              [_ACTIVITY_ID_FIN]="iso._ACTIVITY_ID_FIN"
+                              [_CHAMBRE_STANDARD]="iso._CHAMBRE_STANDARD"
+                              [_CIRCONSTANCES]="iso._CIRCONSTANCES"
+                              [_DATE_NAISSANCE]="iso._DATE_NAISSANCE"
+                              [_DEBUT_ISOLEMENT]="iso._DEBUT_ISOLEMENT"
+                              [_DEBUT_SEJ]="iso._DEBUT_SEJ"
+                              [_FAMILLE_PREVENU]="iso._FAMILLE_PREVENU"
+                              [_FIN_ISOLEMENT]="iso._FIN_ISOLEMENT"
+                              [_FIN_SEJ]="iso._FIN_SEJ"
+                              [_IEP]="iso._IEP"
+                              [_INDICATIONS]="iso._INDICATIONS"
+                              [_IPP]="iso._IPP"
+                              [_MED_PRESCRI_SORTIE]="iso._MED_PRESCRI_SORTIE"
+                              [_MESURES_PREVENTIVES]="iso._MESURES_PREVENTIVES"
+                              [_MODE_HOSPI]="iso._MODE_HOSPI"
+                              [_NOM]="iso._NOM"
+                              [_OBSERVATIONS_SORTIE]="iso._OBSERVATIONS_SORTIE"
+                              [_PATIENT_INFORME_MODALITE]="iso._PATIENT_INFORME_MODALITE"
+                              [_PERSON_ID]="iso._PERSON_ID"
+                              [_PRENOM]="iso._PRENOM"
+                              [_PRESCRIPTEUR]="iso._PRESCRIPTEUR"
+                              [_RAISON_CHAMBRE_STANDARD]="iso._RAISON_CHAMBRE_STANDARD"
+                              [_SEXE]="iso._SEXE"
+                              [_UF]="iso._UF"></app-isolement>-->
+                                <td class="filterable-cell">{{ iso._NOM }}</td>
+                                <td class="filterable-cell">{{ iso._PRENOM }}</td>
+                                <td class="filterable-cell">{{ iso._IPP }}</td>
+                                <td class="filterable-cell">{{ iso._IEP }}</td>
+                                <td class="filterable-cell">{{ iso._DATE_NAISSANCE }}</td>
+                                <td class="filterable-cell">{{ iso._SEXE }}</td>
+                                <td class="filterable-cell">{{ iso._DEBUT_SEJ }}</td>
+                                <td class="filterable-cell">{{ iso._FIN_SEJ }}</td>
+                                <td class="filterable-cell">{{ iso._DEBUT_ISOLEMENT }}</td>
+                                <td class="filterable-cell">{{ iso._FIN_ISOLEMENT }}</td>
+                                <td class="filterable-cell"></td>
+                                <td class="filterable-cell">{{ iso._PRESCRIPTEUR }}</td>
+                                <td class="filterable-cell">{{ iso._UF }}</td>
+                                <td class="filterable-cell"></td>
+                                <td class="filterable-cell">{{ iso._CHAMBRE_STANDARD }}</td>
+                                <td class="filterable-cell">{{ iso._RAISON_CHAMBRE_STANDARD }}</td>
+                                <td class="filterable-cell">{{ iso._PATIENT_INFORME_MODALITE }}</td>
+                                <td class="filterable-cell">{{ iso._FAMILLE_PREVENU }}</td>
+                                <td class="filterable-cell">{{ iso._MODE_HOSPI }}</td>
+                                <td class="filterable-cell">{{ iso._INDICATIONS }}</td>
+                                <td class="filterable-cell">{{ iso._MESURES_PREVENTIVES }}</td>
+                                <td class="filterable-cell">{{ iso._CIRCONSTANCES }}</td>
+                                <td class="filterable-cell">{{ iso._MED_PRESCRI_SORTIE }}</td>
+                                <td class="filterable-cell">{{ iso._OBSERVATIONS_SORTIE }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
